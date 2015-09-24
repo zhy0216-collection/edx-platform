@@ -267,6 +267,7 @@ class CoursewareSearchCohortTest(ContainerBase):
         self._goto_staff_page().set_staff_view_mode('Staff')
         self.courseware_search_page.search_for_term(self.visible_to_all_html)
         assert self.visible_to_all_html in self.courseware_search_page.search_results.html[0]
+        # from nose.tools import set_trace; set_trace()
         self.courseware_search_page.clear_search()
         self.courseware_search_page.search_for_term(self.group_a_and_b_html)
         assert self.group_a_and_b_html in self.courseware_search_page.search_results.html[0]

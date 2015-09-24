@@ -114,6 +114,10 @@ a, a:visited {
   margin: 0 auto;
   background: $content-wrapper-bg;
 
+  &:focus {
+    outline: none;
+  }
+
   @media print {
     padding-bottom: 0;
   }
@@ -340,16 +344,13 @@ mark {
   position: absolute;
   left: 0;
   top: -($baseline*30);
-  width: 1px;
-  height: 1px;
   overflow: hidden;
   background: $white;
   border-bottom: 1px solid $border-color-4;
   padding: ($baseline*0.75) ($baseline/2);
 
   &:focus, &:active {
-    position: static;
-    width: auto;
-    height: auto;
+    position: relative;
+    top: auto;
   }
 }
