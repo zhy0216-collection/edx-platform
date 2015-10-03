@@ -85,6 +85,7 @@ class IsStaffOrReadOnly(permissions.BasePermission):
 class IsStaffOrOwner(permissions.BasePermission):
     """
     Permission that allows access to admin users or the owner of an object.
+
     The owner is considered the User object represented by obj.user.
     """
     def has_object_permission(self, request, view, obj):
