@@ -101,20 +101,6 @@ class CoursewareTest(UniqueCourseTest):
         # Problem name should be "TEST PROBLEM 2".
         self.assertEqual(self.problem_page.problem_name, 'TEST PROBLEM 2')
 
-    def test_skip_navigation(self):
-        """
-        Skip navigation functions as intended.
-        """
-
-        # Navigate to a course
-        self.courseware_page.visit()
-
-        # Verify the skip container is present
-        self.courseware_page.verify_skip_to_container_exists()
-
-        # Activate the link and expect focus to be on the #href
-        self.courseware_page.ensure_skip_link_sends_focus_to_container()
-
 
 class ProctoredExamTest(UniqueCourseTest):
     """
