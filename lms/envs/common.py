@@ -2727,4 +2727,6 @@ FINANCIAL_ASSISTANCE_MAX_LENGTH = 2500
 
 
 # Identifier included in the User Agent from open edX mobile apps.
-MOBILE_APP_USER_AGENT_ID = 'edX/org.edx.mobile'
+MOBILE_APP_USER_AGENT_REGEXES = [
+    r'edX/org.edx.mobile',
+]
