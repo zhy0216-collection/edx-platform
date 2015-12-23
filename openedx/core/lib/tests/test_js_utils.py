@@ -4,7 +4,7 @@ Tests for js_utils.py
 import json
 from unittest import TestCase
 from openedx.core.lib.js_utils import (
-    escape_json_dumps, escape_js_string
+    escape_json_dumps, escape_js_string, json as json_mako_filter, js as js_mako_filter
 )
 
 
@@ -28,9 +28,9 @@ class TestJSUtils(TestCase):
         def default(self, noDefaultEncodingObj):
             return noDefaultEncodingObj.value.replace("<script>", "sample-encoder-was-here")
 
-    def test_escape_json_dumps_escapes_unsafe_html(self):
+    def validate_json_method_escapes_unsafe_html(self, escape_json_method):
         """
-        Test escape_json_dumps properly escapes &, <, and >.
+        Test passed escape_json_method properly escapes &, <, and >.
         """
         malicious_json = {"</script><script>alert('hello, ');</script>": "</script><script>alert('&world!');</script>"}
         expected_encoded_json = (
@@ -38,8 +38,20 @@ class TestJSUtils(TestCase):
             r'''"\u003c/script\u003e\u003cscript\u003ealert('\u0026world!');\u003c/script\u003e"}'''
         )
 
-        encoded_json = escape_json_dumps(malicious_json)
+        encoded_json = escape_json_method(malicious_json)
         self.assertEquals(expected_encoded_json, encoded_json)
+
+    def test_escape_json_dumps_escapes_unsafe_html(self):
+        """
+        Test escape_json_dumps properly escapes &, <, and >.
+        """
+        self.validate_json_method_escapes_unsafe_html(escape_json_dumps)
+
+    def test_json_mako_filter_escapes_unsafe_html(self):
+        """
+        Test json_mako_filter properly escapes &, <, and >.
+        """
+        self.validate_json_method_escapes_unsafe_html(json_mako_filter)
 
     def test_escape_json_dumps_with_custom_encoder_escapes_unsafe_html(self):
         """
@@ -61,14 +73,27 @@ class TestJSUtils(TestCase):
         encoded_json = escape_json_dumps(malicious_json, cls=self.SampleJSONEncoder)
         self.assertEquals(expected_custom_encoded_json, encoded_json)
 
-    def test_escape_js_string_escapes_unsafe_html(self):
+    def validate_js_method_escapes_unsafe_html(self, escape_js_method):
         """
-        Test escape_js_string escapes &, <, and >, as well as returns a unicode type
+        Test passed escape_js_method escapes &, <, and >, as well as returns a
+        unicode type
         """
         malicious_js_string = "</script><script>alert('hello, ');</script>"
 
         expected_escaped_js_string = unicode(
             r"\u003C/script\u003E\u003Cscript\u003Ealert(\u0027hello, \u0027)\u003B\u003C/script\u003E"
         )
-        escaped_js_string = escape_js_string(malicious_js_string)
+        escaped_js_string = escape_js_method(malicious_js_string)
         self.assertEquals(expected_escaped_js_string, escaped_js_string)
+
+    def test_escape_js_string_escapes_unsafe_html(self):
+        """
+        Test escape_js_string escapes &, <, and >, as well as returns a unicode type
+        """
+        self.validate_js_method_escapes_unsafe_html(escape_js_string)
+
+    def test_js_mako_filter_escapes_unsafe_html(self):
+        """
+        Test js_mako_filter escapes &, <, and >, as well as returns a unicode type
+        """
+        self.validate_js_method_escapes_unsafe_html(js_mako_filter)
