@@ -440,12 +440,121 @@ class DiscussionResponseEditTest(BaseDiscussionTestCase):
         )
         view.push()
 
+    def _confirm_response_html(self, page, response_id, expected_response_html):
+        """
+        Assert that the actual response html is as expected.
+        """
+        actual_response_html = page.q(
+            css=".response_{} .response-body".format(response_id)
+        ).html[0]
+        self.assertEqual(expected_response_html, actual_response_html)
+
     def edit_response(self, page, response_id):
         self.assertTrue(page.is_response_editable(response_id))
         page.start_response_edit(response_id)
         new_response = "edited body"
         page.set_response_editor_value(response_id, new_response)
         page.submit_response_edit(response_id, new_response)
+
+    def edit_response_add_link(self, page, response_id):
+        """
+        Replacing the current content with a link via the "add link"
+        button in the editor.
+        """
+        self.assertTrue(page.is_response_editable(response_id))
+        page.start_response_edit(response_id)
+        url = "http://www.example.com/somewhere"
+        description = "somewhere on example.com"
+        page.set_response_editor_value(response_id, "")
+        page.add_content_via_editor_button("link", response_id, url, description)
+        page.submit_response_edit(response_id, description)
+        expected_response_html = (
+            '<p><a href="http://www.example.com/somewhere">'
+            'somewhere on example.com</a></p>'
+        )
+        self._confirm_response_html(page, response_id, expected_response_html)
+
+    def edit_response_add_link_errors(self, page, response_id):
+        """
+        Replacing the current content with a link via the "add link"
+        button in the editor.
+        """
+        self.assertTrue(page.is_response_editable(response_id))
+        page.start_response_edit(response_id)
+        page.set_response_editor_value(response_id, "")
+        page.add_content_via_editor_button("link", response_id, '', '')
+        expected_response_html = (
+            '<p><a href="http://www.example.com/somewhere">'
+            'somewhere on example.com</a></p>'
+        )
+        self._confirm_response_html(page, response_id, expected_response_html)
+
+    def edit_response_add_image(self, page, response_id):
+        """
+        Replacing the current content with an image via the "add image"
+        button in the editor.
+        """
+        self.assertTrue(page.is_response_editable(response_id))
+        page.start_response_edit(response_id)
+        url = "http://www.example.com/something.png"
+        description = "image from example.com"
+        page.set_response_editor_value(response_id, "")
+        page.add_content_via_editor_button("image", response_id, url, description)
+        page.submit_response_edit(response_id, '')
+        expected_response_html = (
+            '<p><img src="http://www.example.com/something.png"'
+            ' alt="image from example.com" title=""></p>'
+        )
+        self._confirm_response_html(page, response_id, expected_response_html)
+
+    def verify_link_editor_error_messages_shown(self, page):
+        """
+        Confirm that the error messages are displayed in the editor.
+        """
+        def errors_visible():
+            """
+            Returns True if both errors are visible, False otherwise.
+            """
+            return (
+                page.q(css="#new-url-input-field-message.has-error").visible and
+                page.q(css="#new-url-desc-input-field-message.has-error").visible
+            )
+
+        page.wait_for(errors_visible, "Form errors should be visible.")
+
+    def test_edit_response_add_link(self):
+        self.setup_user()
+        self.setup_view()
+        page = self.create_single_thread_page("response_edit_test_thread")
+        page.visit()
+        self.edit_response_add_link(page, "response_self_author")
+
+    def test_edit_response_add_image(self):
+        self.setup_user()
+        self.setup_view()
+        page = self.create_single_thread_page("response_edit_test_thread")
+        page.visit()
+        self.edit_response_add_image(page, "response_self_author")
+
+    def test_edit_response_add_image_error_msg(self):
+        self.setup_user()
+        self.setup_view()
+        page = self.create_single_thread_page("response_edit_test_thread")
+        page.visit()
+        page.start_response_edit("response_self_author")
+        page.add_content_via_editor_button(
+            "image", "response_self_author", '', '')
+        self.verify_link_editor_error_messages_shown(page)
+
+    def test_edit_response_add_link_error_msg(self):
+        self.setup_user()
+        self.setup_view()
+        page = self.create_single_thread_page("response_edit_test_thread")
+        page.visit()
+        page.start_response_edit("response_self_author")
+        page.add_content_via_editor_button(
+            "link", "response_self_author", '', '')
+        self.verify_link_editor_error_messages_shown(page)
 
     def test_edit_response_as_student(self):
         """

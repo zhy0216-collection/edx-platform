@@ -195,6 +195,18 @@ class DiscussionThreadPage(PageObject, DiscussionPageMixin):
         """Replace the contents of the response editor"""
         self._find_within(".response_{} .discussion-response .wmd-input".format(response_id)).fill(new_body)
 
+    def add_content_via_editor_button(self, content_type, response_id, url, description):
+        """Replace the contents of the response editor"""
+        self._find_within(
+            "#wmd-{}-button-edit-post-body-{}".format(
+                content_type,
+                response_id,
+            )
+        ).click()
+        self.q(css='#new-url-input').fill(url)
+        self.q(css='#new-url-desc-input').fill(description)
+        self.q(css='input[value="OK"]').click()
+
     def submit_response_edit(self, response_id, new_response_body):
         """Click the submit button on the response editor"""
         self._find_within(".response_{} .discussion-response .post-update".format(response_id)).first.click()
