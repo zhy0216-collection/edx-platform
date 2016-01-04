@@ -8,14 +8,14 @@ describe "DiscussionThreadListView", ->
             <div class="forum-nav-header">
                 <button type="button" class="forum-nav-browse" id="forum-nav-browse" aria-haspopup="true">
                     <span class="icon fa fa-bars" aria-hidden="true"></span>
-                    <span class="sr">Discussion topics; current selection is: </span>
+                    <span class="sr">Discussion topics; currently listing: </span>
                     <span class="forum-nav-browse-current">All Discussions</span>
                     ▾
                 </button>
                 <form class="forum-nav-search">
                     <label>
-                        <span class="sr">Search</span>
-                        <input class="forum-nav-search-input" id="forun-nav-search" type="text" placeholder="Search all posts">
+                        <span class="sr">Search forum posts</span>
+                        <input class="forum-nav-search-input" id="forum-nav-search" type="text" placeholder="Search all posts">
                         <span class="icon fa fa-search" aria-hidden="true"></span>
                     </label>
                 </form>

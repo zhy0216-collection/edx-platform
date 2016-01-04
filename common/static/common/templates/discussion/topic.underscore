@@ -2,7 +2,7 @@
 <div class="field-label">
     <span class="field-label-text"><%- gettext("Topic Area:") %></span><div class="field-input post-topic">
         <button type="button" class="post-topic-button">
-            <span class="sr"><%- gettext("Discussion topics; current selection is: ") %></span>
+            <span class="sr"><%- gettext("Discussion topics; currently listing: ") %></span>
             <span class="js-selected-topic"></span>
             <span class="drop-arrow" aria-hidden="true">▾</span>
         </button>
