@@ -202,18 +202,24 @@ def compile_sass(options):
         source_comments = False
         output_style = 'compressed'
 
+    timing_info = []
+
     for sass_dir in SASS_DIRS:
         start = datetime.now()
         css_dir = sass_dir.parent / "css"
         sass.compile(
             dirname=(sass_dir, css_dir),
             include_paths=SASS_LOAD_PATHS + SASS_DIRS,
-            source_comments=source_comments
+            source_comments=source_comments,
+            output_style=output_style,
         )
         duration = datetime.now() - start
+        timing_info.append((sass_dir, css_dir, duration))
+
+    print("\t\tFinished compiling Sass:")
+    for sass_dir, css_dir, duration in timing_info:
         print(">> {} -> {} in {}s".format(sass_dir, css_dir, duration))
 
-    print("\t\tFinished compiling sass.")
 
 def compile_templated_sass(systems, settings):
     """
