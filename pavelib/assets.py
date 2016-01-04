@@ -22,19 +22,13 @@ from .utils.cmd import cmd, django_cmd
 COFFEE_DIRS = ['lms', 'cms', 'common']
 # A list of directories.  Each will be paired with a sibling /css directory.
 SASS_DIRS = [
-#    path("lms/static/sass"),
+    path("lms/static/sass"),
     path("lms/static/themed_sass"),
     path("cms/static/sass"),
     path("common/static/sass"),
     path("lms/static/certificates/sass"),
 ]
-SASS_FILES_AND_TARGETS = [
-    ("lms/static/sass/lms-main.scss", "lms/static/css/lms-main.css"),
-    ("lms/static/sass/lms-main-rtl.scss", "lms/static/css/lms-main-rtl.css"),
-    ("lms/static/sass/lms-course.scss", "lms/static/css/lms-course.css"),
-    ("lms/static/sass/lms-course-rtl.scss", "lms/static/css/lms-course-rtl.css"),
-]
-SASS_LOAD_PATHS = ['common/static', 'common/static/sass', 'lms/static/sass']
+SASS_LOAD_PATHS = ['common/static', 'common/static/sass']
 SASS_CACHE_PATH = '/tmp/sass-cache'
 
 
@@ -208,29 +202,18 @@ def compile_sass(options):
         source_comments = False
         output_style = 'compressed'
 
-    files_and_times = []
-    sources_and_targets = [(sass_dir, sass_dir.parent / "css") for sass_dir in SASS_DIRS]
-#    sources_and_targets.extend(SASS_FILES_AND_TARGETS)
-    for target, dest in sources_and_targets:
+    for sass_dir in SASS_DIRS:
         start = datetime.now()
-        sass.compile(dirname=(target, dest), include_paths=SASS_LOAD_PATHS + SASS_DIRS)
+        css_dir = sass_dir.parent / "css"
+        sass.compile(
+            dirname=(sass_dir, css_dir),
+            include_paths=SASS_LOAD_PATHS + SASS_DIRS,
+            source_comments=source_comments
+        )
         duration = datetime.now() - start
-        files_and_times.append((dest, duration))
-
-    for target, dest in SASS_FILES_AND_TARGETS:
-        start = datetime.now()
-        compiled_css = sass.compile(filename=target, include_paths=SASS_LOAD_PATHS + SASS_DIRS)
-        with open(dest, "wb") as css_file:
-            css_file.write(compiled_css.encode('utf-8'))
-
-        duration = datetime.now() - start
-        files_and_times.append((dest, duration))
+        print(">> {} -> {} in {}s".format(sass_dir, css_dir, duration))
 
     print("\t\tFinished compiling sass.")
-
-    for dest, duration in files_and_times:
-        print(">> {} created in {}s".format(dest, duration))
-
 
 def compile_templated_sass(systems, settings):
     """
