@@ -3,7 +3,7 @@ Asset compilation and collection.
 """
 
 from __future__ import print_function
-
+from datetime import datetime
 import argparse
 import glob
 import traceback
@@ -180,8 +180,6 @@ def compile_coffeescript(*files):
     sh(cmd(
         "node_modules/.bin/coffee", "--compile", *files
     ))
-
-from datetime import datetime
 
 @task
 @no_help
