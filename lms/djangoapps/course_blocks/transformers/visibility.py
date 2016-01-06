@@ -1,7 +1,7 @@
 """
 Visibility Transformer implementation.
 """
-from openedx.core.lib.block_cache.transformer import BlockStructureTransformer
+from openedx.core.lib.block_structure.transformer import BlockStructureTransformer
 
 
 class VisibilityTransformer(BlockStructureTransformer):
@@ -67,14 +67,15 @@ class VisibilityTransformer(BlockStructureTransformer):
                 )
             )
 
+        return block_structure
+
     def transform(self, usage_info, block_structure):
         """
-        Mutates block_structure based on the given usage_info.
+        Transforms block_structure based on the given usage_info.
         """
         # Users with staff access bypass the Visibility check.
-        if usage_info.has_staff_access:
-            return
-
-        block_structure.remove_block_if(
-            lambda block_key: self.get_visible_to_staff_only(block_structure, block_key)
-        )
+        if not usage_info.has_staff_access:
+            block_structure.remove_block_if(
+                lambda block_key: self.get_visible_to_staff_only(block_structure, block_key)
+            )
+        return block_structure

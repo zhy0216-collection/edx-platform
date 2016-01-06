@@ -1,7 +1,7 @@
 """
 Student View Transformer
 """
-from openedx.core.lib.block_cache.transformer import BlockStructureTransformer
+from openedx.core.lib.block_structure.transformer import BlockStructureTransformer
 
 
 class StudentViewTransformer(BlockStructureTransformer):
@@ -66,11 +66,13 @@ class StudentViewTransformer(BlockStructureTransformer):
                     cls.STUDENT_VIEW_DATA,
                     student_view_data,
                 )
+        return block_structure
 
     def transform(self, usage_info, block_structure):
         """
-        Mutates block_structure based on the given usage_info.
+        Transforms block_structure based on the given usage_info.
         """
         for block_key in block_structure.post_order_traversal():
             if block_structure.get_xblock_field(block_key, 'category') not in self.requested_student_view_data:
                 block_structure.remove_transformer_block_field(block_key, self, self.STUDENT_VIEW_DATA)
+        return block_structure

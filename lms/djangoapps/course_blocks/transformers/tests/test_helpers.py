@@ -252,8 +252,8 @@ class BlockParentsMapTestCase(ModuleStoreTestCase):
                 transformers result and the current implementation of
                 has_access.
 
-            transformers (BlockStructureTransformer): An optional list
-                of transformer that are to be executed.  If not
+            transformers (BlockStructureTransformers): An optional collection
+                of transformers that are to be executed.  If not
                 provided, the default value used by get_course_blocks
                 is used.
         """
@@ -264,7 +264,7 @@ class BlockParentsMapTestCase(ModuleStoreTestCase):
             """
 
             self.client.login(username=user.username, password=self.password)
-            block_structure = get_course_blocks(user, self.course.location, transformers=transformers)
+            block_structure = get_course_blocks(user, self.course.location, transformers)
 
             # Enumerate through all the blocks that were created in the
             # course

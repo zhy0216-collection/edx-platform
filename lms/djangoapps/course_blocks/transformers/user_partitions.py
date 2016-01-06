@@ -1,7 +1,7 @@
 """
 User Partitions Transformer
 """
-from openedx.core.lib.block_cache.transformer import BlockStructureTransformer
+from openedx.core.lib.block_structure.transformer import BlockStructureTransformer
 
 from .split_test import SplitTestTransformer
 from .utils import get_field_on_block
@@ -48,7 +48,7 @@ class UserPartitionTransformer(BlockStructureTransformer):
         # If there are no user partitions, this transformation is a
         # no-op, so there is nothing to collect.
         if not user_partitions:
-            return
+            return block_structure
 
         # For each block, compute merged group access. Because this is a
         # topological sort, we know a block's parents are guaranteed to
@@ -64,30 +64,26 @@ class UserPartitionTransformer(BlockStructureTransformer):
             merged_group_access = _MergedGroupAccess(user_partitions, xblock, merged_parent_access_list)
             block_structure.set_transformer_block_field(block_key, cls, 'merged_group_access', merged_group_access)
 
+        return block_structure
+
     def transform(self, usage_info, block_structure):
         """
-        Mutates block_structure and block_data based on the given
-        usage_info.
-
-        Arguments:
-            usage_info (object)
-            block_structure (BlockStructureCollectedData)
+        Transforms block_structure based on the given usage_info.
         """
         SplitTestTransformer().transform(usage_info, block_structure)
 
         user_partitions = block_structure.get_transformer_data(self, 'user_partitions')
 
-        if not user_partitions:
-            return
-
-        user_groups = _get_user_partition_groups(
-            usage_info.course_key, user_partitions, usage_info.user
-        )
-        block_structure.remove_block_if(
-            lambda block_key: not block_structure.get_transformer_block_field(
-                block_key, self, 'merged_group_access'
-            ).check_group_access(user_groups)
-        )
+        if user_partitions:
+            user_groups = _get_user_partition_groups(
+                usage_info.course_key, user_partitions, usage_info.user
+            )
+            block_structure.remove_block_if(
+                lambda block_key: not block_structure.get_transformer_block_field(
+                    block_key, self, 'merged_group_access'
+                ).check_group_access(user_groups)
+            )
+        return block_structure
 
 
 class _MergedGroupAccess(object):

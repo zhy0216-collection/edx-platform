@@ -1,7 +1,7 @@
 """
 TODO
 """
-from openedx.core.lib.block_cache.transformer import BlockStructureTransformer
+from openedx.core.lib.block_structure.transformer import BlockStructureTransformer
 from .block_depth import BlockDepthTransformer
 
 
@@ -39,13 +39,14 @@ class BlockNavigationTransformer(BlockStructureTransformer):
         """
         # collect basic xblock fields
         block_structure.request_xblock_fields('hide_from_toc')
+        return block_structure
 
     def transform(self, usage_info, block_structure):
         """
-        Mutates block_structure based on the given usage_info.
+        Transforms block_structure based on the given usage_info.
         """
         if self.nav_depth is None:
-            return
+            return block_structure
 
         for block_key in block_structure.topological_traversal():
 
@@ -90,3 +91,5 @@ class BlockNavigationTransformer(BlockStructureTransformer):
                 self.BLOCK_NAVIGATION_FOR_CHILDREN,
                 children_descendants_list
             )
+
+        return block_structure

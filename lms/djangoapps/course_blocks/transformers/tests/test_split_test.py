@@ -3,6 +3,7 @@ Tests for SplitTestTransformer.
 """
 import ddt
 
+from openedx.core.lib.block_structure.transformers import BlockStructureTransformers
 import openedx.core.djangoapps.user_api.course_tag.api as course_tag_api
 from openedx.core.djangoapps.user_api.partition_schemes import RandomUserPartitionScheme
 from student.tests.factories import CourseEnrollmentFactory
@@ -47,7 +48,7 @@ class SplitTestTransformerTestCase(CourseStructureTestCase):
         # Enroll user in course.
         CourseEnrollmentFactory.create(user=self.user, course_id=self.course.id, is_active=True)
 
-        self.transformer = UserPartitionTransformer()
+        self.transformers = BlockStructureTransformers([UserPartitionTransformer()])
 
     def get_course_hierarchy(self):
         """
@@ -193,7 +194,7 @@ class SplitTestTransformerTestCase(CourseStructureTestCase):
         block_structure1 = get_course_blocks(
             self.user,
             self.course.location,
-            transformers={self.transformer},
+            self.transformers,
         )
         self.assertEqual(
             set(block_structure1.get_block_keys()),
@@ -212,13 +213,13 @@ class SplitTestTransformerTestCase(CourseStructureTestCase):
             block_structure1 = get_course_blocks(
                 self.user,
                 self.course.location,
-                transformers={self.transformer},
+                self.transformers,
             )
         with check_mongo_calls(0):
             block_structure2 = get_course_blocks(
                 self.user,
                 self.course.location,
-                transformers={self.transformer},
+                self.transformers,
             )
         self.assertEqual(
             set(block_structure1.get_block_keys()),
