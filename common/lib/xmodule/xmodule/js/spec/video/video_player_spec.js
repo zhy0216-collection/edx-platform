@@ -5,7 +5,7 @@ require(
 ['video/03_video_player.js'],
 function (VideoPlayer) {
     describe('VideoPlayer', function () {
-        var state, oldOTBD;
+        var state, oldOTBD, Logger = window.Logger;
 
         beforeEach(function () {
             oldOTBD = window.onTouchBasedDevice;
@@ -331,6 +331,28 @@ function (VideoPlayer) {
 
                 it('pause the video caption', function () {
                     expect($.fn.trigger).toHaveBeenCalledWith('ended', {});
+                });
+            });
+
+            describe('Video Player', function () {
+                beforeEach(function () {
+                    state = jasmine.initializePlayer();
+                    state.videoEl = $('video, iframe');
+                    spyOn(Logger, 'log');
+                });
+
+                it('will not emit play_video event upon onPlay', function () {
+                    state.videoPlayer.onPlay();
+                    expect(Logger.log).not.toHaveBeenCalled();
+                });
+
+                it('will emit play_video only when play button is clicked', function () {
+                    $('.video_control.play').click();
+                    expect(Logger.log).toHaveBeenCalledWith('play_video', {
+                        id: 'id',
+                        code: 'html5',
+                        currentTime: 0
+                    });
                 });
             });
         });

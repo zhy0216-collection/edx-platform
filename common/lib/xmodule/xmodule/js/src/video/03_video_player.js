@@ -350,6 +350,7 @@ function (HTML5Video, Resizer) {
             }
 
             this.videoPlayer.player.playVideo();
+            this.el.trigger('play', arguments);
         }
     }
 
@@ -573,7 +574,6 @@ function (HTML5Video, Resizer) {
             end: false
         });
         this.videoPlayer.ready();
-        this.el.trigger('play', arguments);
     }
 
     function onUnstarted() { }
