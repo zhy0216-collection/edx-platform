@@ -39,8 +39,6 @@
 
 @mixin show-hover-state() {
     opacity: 1;
-    background-color: $black;
-    border-radius: ($baseline/4);
 }
 
 @function em($pxval, $base: 16) {

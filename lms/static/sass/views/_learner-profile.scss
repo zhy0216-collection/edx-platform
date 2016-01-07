@@ -50,18 +50,19 @@
             }
 
             .u-field-upload-button {
+                @include transition(all $tmg-f1 ease-in-out 0s);
                 width: $profile-image-dimension;
                 height: $profile-image-dimension;
                 position: absolute;
                 top: 0;
+                border-radius: ($baseline/4);
+                background: rgba(229,241,247, .8);
+                color: $link-color;
                 text-shadow: none;
-                background: $black;
-                color: $white;
                 opacity: 0;
-                @include transition(all $tmg-f1 ease-in-out 0s);
 
                 i {
-                    color: $white;
+                    color: $link-color;
                 }
 
                 &:focus,
@@ -80,8 +81,8 @@
                 transform: translateY(35px);
                 -webkit-transform: translateY(35px);
                 display: block;
-                background: $black;
-                color: $white;
+                /*background: rgba(229,241,247, .8);
+                color: $gray-d2;*/
                 margin-bottom: ($baseline/4);
                 line-height: 1.3em;
             }
@@ -92,10 +93,9 @@
                 position: absolute;
                 top: 0;
                 @include left(0);
-                /*opacity: 0;*/
                 visibility: hidden;
-                background: $black;
-                color: $white;
+                /*background: rgba(229,241,247, .8);
+                color: $gray-d2;*/
                 cursor: pointer;
             }
 
