@@ -101,30 +101,11 @@
 
             .u-field-remove-button {
                 position: relative;
+                display: block;
                 width: $profile-image-dimension;
-                height: $baseline;
-                margin-top: 2px;
+                margin-top: ($baseline / 4);
+                padding: ($baseline / 5);
                 text-align: center;
-                opacity: 0;
-
-                &:active {
-                    box-shadow: none;
-                    outline: 0;
-                }
-                &:focus,
-                &:hover {
-                    box-shadow: none;
-                    outline: 0;
-                    border: 2px dashed $link-color !important;
-                }
-            }
-
-            &:hover,
-            &:focus {
-                .u-field-upload-button,
-                .u-field-remove-button {
-                    @include show-hover-state();
-                }
             }
         }
     }
