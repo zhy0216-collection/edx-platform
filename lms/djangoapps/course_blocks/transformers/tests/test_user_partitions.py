@@ -5,7 +5,6 @@ Tests for UserPartitionTransformer.
 from collections import namedtuple
 import ddt
 
-from openedx.core.lib.block_structure.transformers import BlockStructureTransformers
 from openedx.core.djangoapps.course_groups.partition_scheme import CohortPartitionScheme
 from openedx.core.djangoapps.course_groups.tests.helpers import CohortFactory, config_course_cohorts
 from openedx.core.djangoapps.course_groups.cohorts import add_user_to_cohort
@@ -23,6 +22,8 @@ class UserPartitionTestMixin(object):
     """
     Helper Mixin for testing user partitions.
     """
+    TRANSFORMER_CLASS_TO_TEST = UserPartitionTransformer
+
     def setup_groups_partitions(self, num_user_partitions=1, num_groups=4):
         """
         Sets up groups and user partitions for testing.
@@ -90,8 +91,6 @@ class UserPartitionTransformerTestCase(UserPartitionTestMixin, CourseStructureTe
 
         # Set up cohorts.
         self.setup_cohorts(self.course)
-
-        self.transformers = BlockStructureTransformers([UserPartitionTransformer()])
 
     def get_course_hierarchy(self):
         """

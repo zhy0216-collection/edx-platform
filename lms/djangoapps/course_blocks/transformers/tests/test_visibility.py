@@ -3,7 +3,6 @@ Tests for VisibilityTransformer.
 """
 import ddt
 
-from openedx.core.lib.block_structure.transformers import BlockStructureTransformers
 from ..visibility import VisibilityTransformer
 from .test_helpers import BlockParentsMapTestCase, update_block
 
@@ -13,6 +12,8 @@ class VisibilityTransformerTestCase(BlockParentsMapTestCase):
     """
     VisibilityTransformer Test
     """
+    TRANSFORMER_CLASS_TO_TEST = VisibilityTransformer
+
     # Following test cases are based on BlockParentsMapTestCase.parents_map
     @ddt.data(
         ({}, {0, 1, 2, 3, 4, 5, 6}, {}),
@@ -40,5 +41,5 @@ class VisibilityTransformerTestCase(BlockParentsMapTestCase):
             self.student,
             expected_visible_blocks,
             blocks_with_differing_access,
-            BlockStructureTransformers([VisibilityTransformer()]),
+            self.transformers,
         )

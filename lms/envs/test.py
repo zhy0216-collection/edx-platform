@@ -552,3 +552,6 @@ FEATURES['ORGANIZATIONS_APP'] = True
 
 # Financial assistance page
 FEATURES['ENABLE_FINANCIAL_ASSISTANCE_FORM'] = True
+
+from openedx.core.lib.block_structure.transformer_registry import TransformerRegistry
+TransformerRegistry.USE_PLUGIN_MANAGER = False

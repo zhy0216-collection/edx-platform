@@ -63,8 +63,7 @@ def get_course_blocks(
             exactly equivalent to the blocks that the given user has
             access.
     """
-    store = modulestore()
-    if root_block_usage_key != store.make_course_usage_key(root_block_usage_key.course_key):
+    if root_block_usage_key != modulestore().make_course_usage_key(root_block_usage_key.course_key):
         # Enforce this check for now until MA-1604 is implemented.
         # Otherwise, callers will get incorrect block data after a
         # new version of the course is published, since
@@ -76,21 +75,47 @@ def get_course_blocks(
         transformers = BlockStructureTransformers(COURSE_BLOCK_ACCESS_TRANSFORMERS)
     transformers.usage_info = CourseUsageInfo(root_block_usage_key.course_key, user)
 
-    return BlockStructureManager(root_block_usage_key, store, cache).get_transformed(transformers)
+    return _get_block_structure_manager(root_block_usage_key.course_key).get_transformed(transformers)
+
+
+def get_course_in_cache(course_key):
+    """
+    A higher order function implemented on top of the
+    block_structure.get_collected function that returns the block
+    structure in the cache for the given course_key.
+
+    Returns:
+        BlockStructureBlockData - The collected block structure,
+            starting at root_block_usage_key.
+    """
+    return _get_block_structure_manager(course_key).get_collected()
 
 
 def clear_course_from_cache(course_key):
     """
     A higher order function implemented on top of the
     block_structure.clear_block_cache function that clears the block
-    structure from the cache for the block structure starting at the
-    root block of the course for the given course_key.
+    structure from the cache for the given course_key.
 
     Note: See Note in get_course_blocks. Even after MA-1604 is
     implemented, this implementation should still be valid since the
     entire block structure of the course is cached, even though
     arbitrary access to an intermediate block will be supported.
     """
+    _get_block_structure_manager(course_key).clear()
+
+
+def _get_block_structure_manager(course_key):
+    """
+    Returns the manager for managing Block Structures for the given course.
+    """
     store = modulestore()
     course_usage_key = store.make_course_usage_key(course_key)
-    BlockStructureManager(course_usage_key, store, cache).clear()
+    return BlockStructureManager(course_usage_key, store, _get_cache())
+
+
+def _get_cache():
+    """
+    Returns the storage for caching Block Structures.
+    """
+    return cache

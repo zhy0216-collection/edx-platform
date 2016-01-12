@@ -7,7 +7,6 @@ from django.utils.timezone import now
 from mock import patch
 
 from courseware.tests.factories import BetaTesterFactory
-from openedx.core.lib.block_structure.transformers import BlockStructureTransformers
 from ..start_date import StartDateTransformer, DEFAULT_START_DATE
 from .test_helpers import BlockParentsMapTestCase, update_block
 
@@ -19,6 +18,7 @@ class StartDateTransformerTestCase(BlockParentsMapTestCase):
     """
     STUDENT = 1
     BETA_USER = 2
+    TRANSFORMER_CLASS_TO_TEST = StartDateTransformer
 
     class StartDateType(object):
         """
@@ -115,5 +115,5 @@ class StartDateTransformerTestCase(BlockParentsMapTestCase):
             self.beta_user if user_type == self.BETA_USER else self.student,
             expected_student_visible_blocks,
             blocks_with_differing_student_access,
-            BlockStructureTransformers([StartDateTransformer()]),
+            self.transformers,
         )

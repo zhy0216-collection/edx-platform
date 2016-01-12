@@ -25,6 +25,7 @@ class ContentLibraryTransformerTestCase(CourseStructureTestCase):
     """
     ContentLibraryTransformer Test
     """
+    TRANSFORMER_CLASS_TO_TEST = ContentLibraryTransformer
 
     def setUp(self):
         """
@@ -42,7 +43,6 @@ class ContentLibraryTransformerTestCase(CourseStructureTestCase):
         CourseEnrollmentFactory.create(user=self.user, course_id=self.course.id, is_active=True)
 
         self.selected_module = MockedModule('{"selected": [["vertical", "vertical_vertical2"]]}')
-        self.transformers = BlockStructureTransformers([ContentLibraryTransformer()])
 
     def get_course_hierarchy(self):
         """
