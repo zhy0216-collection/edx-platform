@@ -292,7 +292,7 @@ class UserProfile(models.Model):
         year_of_birth = self.year_of_birth
         year = datetime.now(UTC).year
         if year_of_birth is not None:
-            return year - year_of_birth
+            return year - year_of_birth - 1
 
     @property
     def level_of_education_display(self):
@@ -364,9 +364,9 @@ class UserProfile(models.Model):
         if date is None:
             age = self.age
         else:
-            age = date.year - year_of_birth
+            age = date.year - year_of_birth - 1
 
-        return age <= age_limit
+        return age < age_limit
 
     def __enumerable_to_display(self, enumerables, enum_value):
         """ Get the human readable value from an enumerable list of key-value pairs. """
