@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Tests for Event tracker backend."""
 from __future__ import absolute_import
 
 import json
@@ -58,7 +59,7 @@ class TestLoggerBackend(TestCase):
         When event information contain latin1 characters
         """
         request = self.request_factory.get('/somewhere')
-        request.META['HTTP_USER_AGENT'] = u'test latin1 Ó é ñ'.encode('latin1')
+        request.META['HTTP_USER_AGENT'] = u'test latin1 Ó é ñ'.encode('latin1')  # pylint: disable=no-member
 
         # context for request
         self.track_middleware.process_request(request)
