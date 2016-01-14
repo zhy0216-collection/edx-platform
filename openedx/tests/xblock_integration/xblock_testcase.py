@@ -31,6 +31,8 @@ Our next steps would be to:
 * Have an appropriate test to make sure those tests are likely
   running for standard XBlocks (e.g. assert those entry points
   exist)
+* Move more blocks out of the platform, and more tests into the
+  blocks themselves.
 """
 
 import HTMLParser
@@ -220,11 +222,15 @@ class XBlockScenarioTestCaseMixin(object):
     '''
     This allows us to have test cases defined in JSON today, and in OLX
     someday.
+
+    Until we do OLX, we're very restrictive in structure. One block
+    per sequence, essentially.
     '''
     @classmethod
     def setUpClass(cls):
         """
-        Create a page with two of the XBlock on it
+        Create a set of pages with XBlocks on them. For now, we restrict
+        ourselves to one block per learning sequence.
         """
         super(XBlockScenarioTestCaseMixin, cls).setUpClass()
 
@@ -250,6 +256,13 @@ class XBlockScenarioTestCaseMixin(object):
                     display_name='unit_' + chapter_config['urlname'],
                     category='vertical'
                 )
+
+                if len(chapter_config['xblocks']) > 2:
+                    raise NotImplementedError(
+                        """We only support one block per page. """
+                        """We will do more with OLX+learning """
+                        """sequence cleanups."""
+                        )
 
                 for xblock_config in chapter_config['xblocks']:
                     xblock = ItemFactory.create(
@@ -366,8 +379,9 @@ class XBlockTestCase(XBlockStudentTestCaseMixin,
         """
         return reverse('xblock_handler', kwargs={
             'course_id': unicode(self.course.id),
-            'usage_id': unicode(self.course.id.make_usage_key('done',
-                                                              xblock_name)),
+            'usage_id': unicode(
+                self.course.id.make_usage_key('done', xblock_name)
+            ),
             'handler': handler,
             'suffix': ''
         })
@@ -413,7 +427,7 @@ class XBlockTestCase(XBlockStudentTestCaseMixin,
             'suffix': ''
         })
 
-    def extract_block(self, content, urlname):
+    def extract_block_html(self, content, urlname):
         '''This will extract the HTML of a rendered XBlock from a
         page. This should be simple. This should just be (in lxml):
             usage_id = self.xblocks[block_urlname].scope_ids.usage_id
@@ -467,9 +481,6 @@ class XBlockTestCase(XBlockStudentTestCaseMixin,
 
         We should include data, but with a selector dropping
         the rest of the HTML around the block.
-
-        To do: Implement returning the XBlock's HTML. This is an XML
-        selector on the returned response for that div.
         '''
         section = self._containing_section(block_urlname)
         html_response = collections.namedtuple('HtmlResponse',
@@ -481,8 +492,10 @@ class XBlockTestCase(XBlockStudentTestCaseMixin,
 
         html_response.status_code = response.status_code
         response_content = response.content.decode('utf-8')
-        html_response.content = self.extract_block(response_content,
-                                                   block_urlname)
+        html_response.content = self.extract_block_html(
+            response_content,
+            block_urlname
+        )
         # We return a little bit of metadata helpful for debugging.
         # What is in this is not a defined part of the API contract.
         html_response.debug = {'url': url,
