@@ -26,14 +26,12 @@ class TestTransformer1(MockTransformer):
         """
         cls._set_block_values(block_structure, cls.collect_data_key)
         cls.collect_call_count += 1
-        return block_structure
 
     def transform(self, usage_info, block_structure):
         """
         Transforms the block structure.
         """
         self._set_block_values(block_structure, self.transform_data_key)
-        return block_structure
 
     @classmethod
     def assert_collected(cls, block_structure):

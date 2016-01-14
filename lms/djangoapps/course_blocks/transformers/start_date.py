@@ -83,11 +83,9 @@ class StartDateTransformer(BlockStructureTransformer):
                 merged_start_value
             )
 
-        return block_structure
-
     def transform(self, usage_info, block_structure):
         """
-        Transforms block_structure based on the given usage_info.
+        Mutates block_structure based on the given usage_info.
         """
         # Users with staff access bypass the Start Date check.
         if not usage_info.has_staff_access:
@@ -99,4 +97,3 @@ class StartDateTransformer(BlockStructureTransformer):
                     usage_info.course_key,
                 )
             )
-        return block_structure

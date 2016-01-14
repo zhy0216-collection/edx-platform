@@ -39,14 +39,13 @@ class BlockNavigationTransformer(BlockStructureTransformer):
         """
         # collect basic xblock fields
         block_structure.request_xblock_fields('hide_from_toc')
-        return block_structure
 
     def transform(self, usage_info, block_structure):
         """
-        Transforms block_structure based on the given usage_info.
+        Mutates block_structure based on the given usage_info.
         """
         if self.nav_depth is None:
-            return block_structure
+            return
 
         for block_key in block_structure.topological_traversal():
 
@@ -91,5 +90,3 @@ class BlockNavigationTransformer(BlockStructureTransformer):
                 self.BLOCK_NAVIGATION_FOR_CHILDREN,
                 children_descendants_list
             )
-
-        return block_structure

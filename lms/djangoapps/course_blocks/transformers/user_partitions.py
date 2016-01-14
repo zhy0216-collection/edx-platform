@@ -48,7 +48,7 @@ class UserPartitionTransformer(BlockStructureTransformer):
         # If there are no user partitions, this transformation is a
         # no-op, so there is nothing to collect.
         if not user_partitions:
-            return block_structure
+            return
 
         # For each block, compute merged group access. Because this is a
         # topological sort, we know a block's parents are guaranteed to
@@ -64,11 +64,9 @@ class UserPartitionTransformer(BlockStructureTransformer):
             merged_group_access = _MergedGroupAccess(user_partitions, xblock, merged_parent_access_list)
             block_structure.set_transformer_block_field(block_key, cls, 'merged_group_access', merged_group_access)
 
-        return block_structure
-
     def transform(self, usage_info, block_structure):
         """
-        Transforms block_structure based on the given usage_info.
+        Mutates block_structure based on the given usage_info.
         """
         SplitTestTransformer().transform(usage_info, block_structure)
 
@@ -83,7 +81,6 @@ class UserPartitionTransformer(BlockStructureTransformer):
                     block_key, self, 'merged_group_access'
                 ).check_group_access(user_groups)
             )
-        return block_structure
 
 
 class _MergedGroupAccess(object):

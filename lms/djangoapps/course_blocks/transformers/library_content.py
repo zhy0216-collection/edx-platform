@@ -59,11 +59,9 @@ class ContentLibraryTransformer(BlockStructureTransformer):
                 summary = summarize_block(child_key)
                 block_structure.set_transformer_block_field(child_key, cls, 'block_analytics_summary', summary)
 
-        return block_structure
-
     def transform(self, usage_info, block_structure):
         """
-        Transforms block_structure based on the given usage_info.
+        Mutates block_structure based on the given usage_info.
         """
 
         all_library_children = set()
@@ -117,8 +115,6 @@ class ContentLibraryTransformer(BlockStructureTransformer):
         block_structure.remove_block_if(
             check_child_removal
         )
-
-        return block_structure
 
     @classmethod
     def _get_student_module(cls, user, course_key, block_key):

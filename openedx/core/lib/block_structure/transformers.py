@@ -60,7 +60,6 @@ class BlockStructureTransformers(object):
     def collect(cls, block_structure):
         """
         Collects data for each registered transformer.
-        Returns the collected block structure.
         """
         for transformer in TransformerRegistry.get_registered_transformers():
             block_structure._add_transformer(transformer)  # pylint: disable=protected-access
@@ -68,8 +67,6 @@ class BlockStructureTransformers(object):
 
         # Collect all fields that were requested by the transformers.
         block_structure._collect_requested_xblock_fields()  # pylint: disable=protected-access
-
-        return block_structure
 
     def transform(self, block_structure):
         """
@@ -81,8 +78,6 @@ class BlockStructureTransformers(object):
 
         # Prune the block structure to remove any unreachable blocks.
         block_structure._prune_unreachable()  # pylint: disable=protected-access
-
-        return block_structure
 
     @classmethod
     def is_collected_outdated(cls, block_structure):

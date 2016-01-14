@@ -68,11 +68,9 @@ class SplitTestTransformer(BlockStructureTransformer):
                 group = child_to_group.get(child_location, None)
                 child.group_access[partition_for_this_block.id] = [group] if group else []
 
-        return block_structure
-
     def transform(self, usage_info, block_structure):
         """
-        Transforms block_structure based on the given usage_info.
+        Mutates block_structure based on the given usage_info.
         """
 
         # The UserPartitionTransformer will enforce group access, so
@@ -81,4 +79,3 @@ class SplitTestTransformer(BlockStructureTransformer):
             lambda block_key: block_key.block_type == 'split_test',
             keep_descendants=True,
         )
-        return block_structure

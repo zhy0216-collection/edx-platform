@@ -76,7 +76,7 @@ class BlockStructureTransformer(object):
                 block structure that is to be modified with collected
                 data to be cached for the transformer.
         """
-        return block_structure
+        pass
 
     @abstractmethod
     def transform(self, usage_info, block_structure):
@@ -124,8 +124,5 @@ class BlockStructureTransformer(object):
             block_structure (BlockStructureBlockData) - A mutable
                 block structure, with already collected data for the
                 transformer, that is to be transformed in place.
-
-        Returns:
-            The transformed block structure.
         """
-        return block_structure
+        pass

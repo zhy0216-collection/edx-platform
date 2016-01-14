@@ -52,14 +52,12 @@ class BlocksAPITransformer(BlockStructureTransformer):
         BlockNavigationTransformer.collect(block_structure)
 
         # TODO support olx_data by calling export_to_xml(?)
-        return block_structure
 
     def transform(self, usage_info, block_structure):
         """
-        Transforms block_structure based on the given usage_info.
+        Mutates block_structure based on the given usage_info.
         """
         StudentViewTransformer(self.requested_student_view_data).transform(usage_info, block_structure)
         BlockCountsTransformer(self.block_types_to_count).transform(usage_info, block_structure)
         BlockDepthTransformer(self.depth).transform(usage_info, block_structure)
         BlockNavigationTransformer(self.nav_depth).transform(usage_info, block_structure)
-        return block_structure

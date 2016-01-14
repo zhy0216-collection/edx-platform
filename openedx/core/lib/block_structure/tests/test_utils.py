@@ -135,7 +135,7 @@ class MockTransformer(BlockStructureTransformer):
         return cls.__name__
 
     def transform(self, usage_info, block_structure):
-        return block_structure
+        pass
 
 
 @contextmanager

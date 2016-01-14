@@ -26,14 +26,13 @@ class BlockCountsTransformer(BlockStructureTransformer):
         """
         # collect basic xblock fields
         block_structure.request_xblock_fields('category')
-        return block_structure
 
     def transform(self, usage_info, block_structure):
         """
-        Transforms block_structure based on the given usage_info.
+        Mutates block_structure based on the given usage_info.
         """
         if not self.block_types_to_count:
-            return block_structure
+            return
 
         for block_key in block_structure.post_order_traversal():
             for block_type in self.block_types_to_count:
@@ -50,4 +49,3 @@ class BlockCountsTransformer(BlockStructureTransformer):
                         (1 if (block_structure.get_xblock_field(block_key, 'category') == block_type) else 0)
                     )
                 )
-        return block_structure

@@ -47,7 +47,8 @@ class BlockStructureManager(object):
                 starting at self.root_block_usage_key.
         """
         block_structure = self.get_collected()
-        return transformers.transform(block_structure)
+        transformers.transform(block_structure)
+        return block_structure
 
     def get_collected(self):
         """

@@ -39,7 +39,7 @@ class BlockDepthTransformer(BlockStructureTransformer):
 
     def transform(self, usage_info, block_structure):
         """
-        Transforms block_structure based on the given usage_info.
+        Mutates block_structure based on the given usage_info.
         """
         for block_key in block_structure.topological_traversal():
             parents = block_structure.get_parents(block_key)
@@ -61,5 +61,3 @@ class BlockDepthTransformer(BlockStructureTransformer):
             block_structure.remove_block_if(
                 lambda block_key: self.get_block_depth(block_structure, block_key) > self.requested_depth
             )
-
-        return block_structure
