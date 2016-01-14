@@ -37,7 +37,7 @@ define('video/09_events_plugin.js', [], function() {
         initialize: function() {
             this.events = {
                 'ready': this.onReady,
-                'play': this.onPlay,
+                'play_video': this.onPlay,
                 'pause': this.onPause,
                 'ended stop': this.onEnded,
                 'seek': this.onSeek,

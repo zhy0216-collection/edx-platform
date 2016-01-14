@@ -33,7 +33,7 @@
         });
 
         it('can emit "play_video" event', function () {
-            state.el.trigger('play');
+            state.el.trigger('play_video');
             expect(Logger.log).toHaveBeenCalledWith('play_video', {
                 id: 'id',
                 code: 'html5',
@@ -148,7 +148,7 @@
             expect(state.videoEventsPlugin).toBeUndefined();
             expect($.fn.off).toHaveBeenCalledWith({
                 'ready': plugin.onReady,
-                'play': plugin.onPlay,
+                'play_video': plugin.onPlay,
                 'pause': plugin.onPause,
                 'ended stop': plugin.onEnded,
                 'seek': plugin.onSeek,
