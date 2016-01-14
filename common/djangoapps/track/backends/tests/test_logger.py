@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
 import json
@@ -7,6 +8,9 @@ import datetime
 from django.test import TestCase
 
 from track.backends.logger import LoggerBackend
+from django.test.client import RequestFactory
+from track.middleware import TrackMiddleware
+from eventtracking import tracker
 
 
 class TestLoggerBackend(TestCase):
@@ -20,6 +24,8 @@ class TestLoggerBackend(TestCase):
         logger.addHandler(self.handler)
 
         self.backend = LoggerBackend(name=logger_name)
+        self.track_middleware = TrackMiddleware()
+        self.request_factory = RequestFactory()
 
     def test_logger_backend(self):
         self.handler.reset()
@@ -46,6 +52,25 @@ class TestLoggerBackend(TestCase):
 
         self.assertEqual(saved_events[0], unpacked_event)
         self.assertEqual(saved_events[1], unpacked_event)
+
+    def test_logger_latin1_characters(self):
+        """
+        When event information contain latin1 characters
+        """
+        request = self.request_factory.get('/somewhere')
+        request.META['HTTP_USER_AGENT'] = u'test latin1 Ó é ñ'.encode('latin1')
+
+        # context for request
+        self.track_middleware.process_request(request)
+        try:
+            context = tracker.get_tracker().resolve_context()
+        finally:
+            self.track_middleware.process_response(request, None)
+
+        self.backend.send(context)
+
+        saved_events = [json.loads(e) for e in self.handler.messages['info']]
+        self.assertEqual(saved_events[0]['agent'], u'test latin1 \xd3 \xe9 \xf1')
 
 
 class MockLoggingHandler(logging.Handler):
